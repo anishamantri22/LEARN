@@ -1,0 +1,197 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct nodetype
+{
+	int data;
+	struct nodetype *add;
+}node;
+void insertatend(node **head,int item)
+{
+	node *ptr,*s;
+	ptr=(node*)malloc(sizeof(node));
+	ptr->data=item;
+	ptr->add=NULL;
+	if(*head==NULL)
+	{
+	*head=ptr;
+	}
+	else
+	{
+	s=*head;
+	while(s->add!=NULL)
+	s=s->add;
+	s->add=ptr;
+}
+}
+void insertatbeg(node **head,int data)
+{
+     node *ptr;
+	ptr=(node*)malloc(sizeof(node));
+	ptr->data=data;
+	ptr->add=*head;
+	*head=ptr;	
+}
+node *search(node *head,int key)
+{
+	while((head!=NULL) && (head->data!=key))
+	   head=head->add;
+	return head;
+}
+void insertafter(node *head,int item,int after)
+{
+	node *ptr,*loc;
+	loc=search(head,after);
+	if(loc==NULL)
+	{
+		printf("\n LOCATION NOT FOUND");
+		return;
+	}
+	ptr=(node*)malloc(sizeof(node));
+	ptr->data=item;
+	ptr->add=loc->add;
+	loc->add=ptr;
+}
+void print(node *head)
+{
+	if(head==NULL)
+	{
+		printf("\n empty");
+		return;
+	}
+	while(head!=NULL)
+	{
+		printf("%d->",head->data);
+		head=head->add;
+	}
+}
+void deleteatend(node **head)
+{
+	node *s;
+	s=*head;
+	while(s->add->add!=NULL)
+	{
+		s=s->add;
+	}
+	free(s->add);
+	s->add=NULL;
+}
+void deleteathead(node **head)
+{
+	node *temp;
+	temp=*head;
+	*head=(*head)->add;
+	free(temp);
+}
+void deleteatpos(node **head,int pos)
+{
+	node *s,*temp;
+	s=*head;
+	pos--;
+	while(pos>1)
+	{
+		s=s->add;
+		pos--;
+	}
+	temp=s->add;
+	s->add=s->add->add;
+	free(temp);
+}
+void middleofll(node **head)
+{
+	if(*head==NULL)
+	{
+	    printf("\n LINKED LIST IS EMPTY");
+	    return;
+	}
+	node *slow,*fast;
+    slow=*head;
+    fast=*head;
+    while(fast->add!=NULL && fast!=NULL)
+    {
+    	slow=slow->add;
+    	fast=fast->add->add;
+	}
+	printf("\n MIDDLE OF LINKED LIST=%d",slow->data);
+}
+void nthfromlast(node *head,int n)
+{
+	int i,l=0;
+	node *temp=head;
+	while(temp!=NULL)
+	{
+		temp=temp->add;
+		l++;
+	}
+	if(l<n)
+	return;
+	temp=head;
+	for(i=1;i<l-n+1;i++)
+	temp=temp->add;
+	printf("%d",temp->data);
+}
+int main()
+{
+	node *head;
+	head=NULL;
+	int item,choice,after,pos,n;
+	while(1)
+	{
+		printf("\n------LINKED LIST MENU-----");
+		printf("\n 1) INSERT AT BEGINNING");
+		printf("\n 2) INSERT AT END");
+		printf("\n 3) DISPLAY");
+		printf("\n 4) INSERT AFTER");
+		printf("\n 5)DELETE AT END");
+		printf("\n 6) DELETE AT BEGINNING");
+		printf("\n 7) DELETE AFTER");
+		printf("\n 8) MIDDLE");
+		printf("\n 9) NTH FROM LAST");
+		printf("\n 10)EXIT");
+		printf("\n ENTER YOUR CHOICE\n");
+		scanf("\n %d",&choice);
+		switch(choice)
+		{
+			case 1: 
+			printf("\n ENTER ITEM=");
+			scanf("%d",&item);
+			insertatbeg(&head,item);
+			break;
+			case 2: 
+			printf("\n ENTER ITEM=");
+			scanf("%d",&item);
+			insertatend(&head,item);
+			break;
+			case 3: 
+			print(head);
+			break;
+			case 4:
+			printf("\n ENTER ITEM=");
+			scanf("%d",&item);
+			printf("\n INSERT AFTER WHAT ELEMENT=");
+			scanf("%d",&after);
+			insertafter(head,item,after);
+			break;
+			case 5:
+			deleteatend(&head);
+			break;
+			case 6:
+			deleteathead(&head);
+			break;
+			case 7:
+			printf("\n ENTER POSITION:");
+			scanf("%d",&pos);
+			deleteatpos(&head,pos);
+			break;
+			case 8:
+			middleofll(&head);
+			break;
+			case 9:
+			printf("\n ENTER POSITION:");
+			scanf("%d",&n);
+			nthfromlast(head,n);
+			break;
+			default:
+			exit(1);
+    	}
+    }
+}
